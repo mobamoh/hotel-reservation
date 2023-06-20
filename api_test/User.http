@@ -1,0 +1,15 @@
+GET http://localhost:5001/api/v1/user
+
+###
+GET http://localhost:5001/api/v1/user/64921b25dc25ab24d011203a
+
+###
+POST http://localhost:5001/api/v1/user
+Content-Type: application/json
+
+{
+  "firstName": "test",
+  "lastName": "test",
+  "email": "test@bamoh.com",
+  "password": "testtest"
+}

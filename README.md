@@ -1,1 +1,1 @@
-# hotel-reservation
+# hotel reservation backend
