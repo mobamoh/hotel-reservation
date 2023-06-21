@@ -1,6 +1,7 @@
 package types
 
 import (
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 	"regexp"
@@ -13,7 +14,7 @@ type UserData struct {
 	Password  string `json:"password"`
 }
 type User struct {
-	ID                primitive.ObjectID `json:"_id,omitempty"`
+	ID                primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
 	FirstName         string             `json:"first_name"`
 	LastName          string             `json:"last_name"`
 	Email             string             `json:"email"`
@@ -34,6 +35,10 @@ func NewUser(userData UserData) (*User, error) {
 	}, nil
 }
 
+func isEmailValid(e string) bool {
+	emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	return emailRegex.MatchString(e)
+}
 func (s *UserData) Validate() map[string]string {
 	errors := map[string]string{}
 	if len(s.LastName) < 2 {
@@ -50,8 +55,13 @@ func (s *UserData) Validate() map[string]string {
 	}
 	return errors
 }
-
-func isEmailValid(e string) bool {
-	emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	return emailRegex.MatchString(e)
+func (s *UserData) ValidateUpdate() bson.M {
+	update := bson.M{}
+	if len(s.LastName) > 0 {
+		update["lastName"] = s.LastName
+	}
+	if len(s.FirstName) > 0 {
+		update["firstName"] = s.FirstName
+	}
+	return update
 }

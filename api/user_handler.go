@@ -49,3 +49,23 @@ func (uh *UserHandler) HandleInsertUser(ctx *fiber.Ctx) error {
 	}
 	return ctx.JSON(user)
 }
+
+func (uh *UserHandler) HandleUpdateUser(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	var data types.UserData
+	if err := ctx.BodyParser(&data); err != nil {
+		return err
+	}
+	if err := uh.userStore.UpdateUser(ctx.Context(), id, data); err != nil {
+		return err
+	}
+	return ctx.JSON(map[string]string{"updated": id})
+}
+
+func (uh *UserHandler) HandleDeleteUser(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	if err := uh.userStore.DeleteUser(ctx.Context(), id); err != nil {
+		return err
+	}
+	return ctx.JSON(map[string]string{"deleted": id})
+}

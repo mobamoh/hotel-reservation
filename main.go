@@ -32,6 +32,8 @@ func main() {
 	apiv1.Get("/user/:id", userHandler.HandleGetUserByID)
 	apiv1.Get("/user", userHandler.HandleGetUsers)
 	apiv1.Post("/user", userHandler.HandleInsertUser)
+	apiv1.Put("/user/:id", userHandler.HandleUpdateUser)
+	apiv1.Delete("/user/:id", userHandler.HandleDeleteUser)
 	err = app.Listen(*port)
 	if err != nil {
 		panic(err)

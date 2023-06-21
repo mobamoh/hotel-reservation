@@ -13,3 +13,15 @@ Content-Type: application/json
   "email": "test@bamoh.com",
   "password": "testtest"
 }
+
+###
+PUT http://localhost:5001/api/v1/user/649216b8847b2b6b49981970
+Content-Type: application/json
+
+{
+  "firstName": "Momed",
+  "lastName": "Ba"
+}
+
+###
+DELETE http://localhost:5001/api/v1/user/649216a4847b2b6b4998196f
