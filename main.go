@@ -10,12 +10,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const MongoURI = ""
-
 func main() {
 	port := flag.String("PORT", ":5001", "default PORT")
 
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(MongoURI))
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.MongoURI))
 	if err != nil {
 		panic(err)
 	}
@@ -25,7 +23,7 @@ func main() {
 		}
 	}()
 
-	userHandler := api.NewUserHandler(db.NewMongoUserStore(client))
+	userHandler := api.NewUserHandler(db.NewMongoUserStore(client, db.DBName))
 	app := fiber.New()
 	apiv1 := app.Group("/api/v1")
 

@@ -10,7 +10,11 @@ import (
 
 const userColl = "users"
 
+type Dropper interface {
+	Drop(context.Context) error
+}
 type UserStore interface {
+	Dropper
 	GetUserByID(context.Context, string) (*types.User, error)
 	GetUsers(context.Context) ([]*types.User, error)
 	InsertUser(context.Context, *types.User) (*types.User, error)
@@ -23,10 +27,10 @@ type MongoUserStore struct {
 	coll   *mongo.Collection
 }
 
-func NewMongoUserStore(client *mongo.Client) *MongoUserStore {
+func NewMongoUserStore(client *mongo.Client, dbName string) *MongoUserStore {
 	return &MongoUserStore{
 		client: client,
-		coll:   client.Database(DBName).Collection(userColl),
+		coll:   client.Database(dbName).Collection(userColl),
 	}
 }
 func (mus MongoUserStore) GetUserByID(ctx context.Context, id string) (*types.User, error) {
@@ -88,4 +92,8 @@ func (mus MongoUserStore) DeleteUser(ctx context.Context, id string) error {
 		return err
 	}
 	return nil
+}
+
+func (mus MongoUserStore) Drop(ctx context.Context) error {
+	return mus.coll.Drop(ctx)
 }
