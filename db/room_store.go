@@ -12,6 +12,7 @@ const roomColl = "rooms"
 
 type RoomStore interface {
 	Insert(context.Context, *types.Room) (*types.Room, error)
+	ListByHotel(ctx context.Context, id string) ([]*types.Room, error)
 }
 
 type MongoRoomStore struct {
@@ -28,16 +29,33 @@ func NewMongoRoomStore(client *mongo.Client, store HotelStore) *MongoRoomStore {
 	}
 }
 
-func (m MongoRoomStore) Insert(ctx context.Context, room *types.Room) (*types.Room, error) {
-	one, err := m.coll.InsertOne(ctx, &room)
+func (s MongoRoomStore) Insert(ctx context.Context, room *types.Room) (*types.Room, error) {
+	one, err := s.coll.InsertOne(ctx, &room)
 	if err != nil {
 		return nil, err
 	}
 	room.ID = one.InsertedID.(primitive.ObjectID)
 	filter := bson.M{"_id": room.HotelID}
 	update := bson.M{"$push": bson.M{"rooms": room.ID}}
-	if err = m.hotelStore.Update(ctx, filter, update); err != nil {
+	if err = s.hotelStore.Update(ctx, filter, update); err != nil {
 		return nil, err
 	}
 	return room, nil
+}
+
+func (s MongoRoomStore) ListByHotel(ctx context.Context, id string) ([]*types.Room, error) {
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	cur, err := s.coll.Find(ctx, bson.M{"hotelID": oid})
+	if err != nil {
+		return nil, err
+	}
+	var rooms []*types.Room
+	if err = cur.All(ctx, &rooms); err != nil {
+		return nil, err
+	}
+	return rooms, nil
+
 }

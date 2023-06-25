@@ -2,19 +2,18 @@ package types
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
-type RoomType int
+type RoomType string
 
 const (
-	Single RoomType = iota + 1
-	Double
-	Deluxe
-	SeaSide
+	Single  RoomType = "single"
+	Double  RoomType = "double"
+	Deluxe  RoomType = "deluxe"
+	SeaSide RoomType = "seaSide"
 )
 
 type Room struct {
-	ID        primitive.ObjectID
-	Type      RoomType
-	BasePrice float64
-	Price     float64
-	HotelID   primitive.ObjectID
+	ID      primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Type    RoomType           `bson:"type" json:"type"`
+	Price   float64            `bson:"price" json:"price"`
+	HotelID primitive.ObjectID `bson:"hotelID" bson:"hotelID"`
 }

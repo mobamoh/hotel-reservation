@@ -30,9 +30,11 @@ func init() {
 	roomStore = db.NewMongoRoomStore(client, hotelStore)
 }
 func main() {
+	println("---- Seeding the DB... ----")
 	insertHotel("Ritz-Carlton", "Berlin", 4)
 	insertHotel("Hyatt", "Douha", 5)
 	insertHotel("Chouchou", "Paris", 3)
+	println("---- Seeding the DB Done! ----")
 }
 
 func insertHotel(name, location string, rating int) {
@@ -50,19 +52,19 @@ func insertHotel(name, location string, rating int) {
 
 	var rooms []*types.Room
 	room1 := &types.Room{
-		Type:      types.Single,
-		BasePrice: 99.1,
-		HotelID:   insertedHotel.ID,
+		Type:    types.Single,
+		Price:   99.1,
+		HotelID: insertedHotel.ID,
 	}
 	room2 := &types.Room{
-		Type:      types.Deluxe,
-		BasePrice: 140.99,
-		HotelID:   insertedHotel.ID,
+		Type:    types.Deluxe,
+		Price:   140.99,
+		HotelID: insertedHotel.ID,
 	}
 	room3 := &types.Room{
-		Type:      types.SeaSide,
-		BasePrice: 110.00,
-		HotelID:   insertedHotel.ID,
+		Type:    types.SeaSide,
+		Price:   110.00,
+		HotelID: insertedHotel.ID,
 	}
 	rooms = append(rooms, room1, room2, room3)
 	println(len(rooms))

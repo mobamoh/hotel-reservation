@@ -1,0 +1,8 @@
+GET http://localhost:5001/api/v1/hotel
+
+###
+GET http://localhost:5001/api/v1/hotel/649876c4f912f93217435b31
+
+###
+
+GET http://localhost:5001/api/v1/hotel/649876c4f912f93217435b31/rooms
