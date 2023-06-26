@@ -22,7 +22,7 @@ func setup(t *testing.T) *testDB {
 	if err != nil {
 		t.Fatal(err)
 	}
-	return &testDB{db.NewMongoUserStore(client, db.TestDBName)}
+	return &testDB{db.NewMongoUserStore(client)}
 }
 
 func (tdb *testDB) teardown(t *testing.T) {

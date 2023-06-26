@@ -15,6 +15,7 @@ var (
 	client     *mongo.Client
 	hotelStore db.HotelStore
 	roomStore  db.RoomStore
+	userStore  db.UserStore
 	err        error
 )
 
@@ -28,16 +29,19 @@ func init() {
 	}
 	hotelStore = db.NewMongoHotelStore(client)
 	roomStore = db.NewMongoRoomStore(client, hotelStore)
+	userStore = db.NewMongoUserStore(client)
 }
 func main() {
-	println("---- Seeding the DB... ----")
-	insertHotel("Ritz-Carlton", "Berlin", 4)
-	insertHotel("Hyatt", "Douha", 5)
-	insertHotel("Chouchou", "Paris", 3)
-	println("---- Seeding the DB Done! ----")
+	println("---- Seeding Hotels... ----")
+	seedHotel("Ritz-Carlton", "Berlin", 4)
+	seedHotel("Hyatt", "Douha", 5)
+	seedHotel("Chouchou", "Paris", 3)
+
+	println("---- Seeding Users... ----")
+	seedUser("Mo", "Bamoh", "mobamoh@mail.com")
 }
 
-func insertHotel(name, location string, rating int) {
+func seedHotel(name, location string, rating int) {
 	hotel := &types.Hotel{
 		Name:     name,
 		Location: location,
@@ -74,5 +78,21 @@ func insertHotel(name, location string, rating int) {
 			log.Fatal(err)
 		}
 		println(insert)
+	}
+}
+
+func seedUser(fn, ln, email string) {
+	data := types.UserData{
+		LastName:  ln,
+		FirstName: fn,
+		Email:     email,
+		Password:  "superLongPassword",
+	}
+	user, err := types.NewUser(data)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if _, err := userStore.InsertUser(ctx, user); err != nil {
+		log.Fatal(err)
 	}
 }

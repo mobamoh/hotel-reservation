@@ -1,3 +1,12 @@
+POST http://localhost:5001/api/auth
+Content-Type: application/json
+
+{
+  "email": "mobamoh@mail.com",
+  "password": "superLongPassword"
+}
+
+###
 GET http://localhost:5001/api/v1/user
 
 ###
