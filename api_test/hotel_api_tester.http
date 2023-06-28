@@ -1,5 +1,5 @@
 GET http://localhost:5001/api/v1/hotel
-
+X-Api-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vYmFtb2hAbWFpbC5jb20iLCJleHBpcmVzIjoxNjg3OTY2ODM1LCJpZCI6IjY0OTlkMjY2M2JiOTUxNGFiYmMzZDI0MyJ9.nxReIBH6YMdgIxLqQ1Qh2inTfconuOLyP16Jh7Jpicw
 ###
 GET http://localhost:5001/api/v1/hotel/649876c4f912f93217435b31
 
