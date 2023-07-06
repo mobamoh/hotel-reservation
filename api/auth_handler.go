@@ -6,6 +6,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/mobamoh/hotel-reservation/db"
 	"github.com/mobamoh/hotel-reservation/types"
+	"net/http"
 	"os"
 	"time"
 )
@@ -25,9 +26,21 @@ type AuthParam struct {
 	Password string `json:"password"`
 }
 
+type genericResp struct {
+	Type string `json:"type"`
+	Msg  string `json:"msg"`
+}
+
 type AuthResponse struct {
 	User  *types.User
 	Token string
+}
+
+func invalidCredentials(ctx *fiber.Ctx) error {
+	return ctx.Status(http.StatusBadRequest).JSON(genericResp{
+		Type: "error",
+		Msg:  "invalid credentials",
+	})
 }
 
 func (h *AuthHandler) HandleAuthentication(ctx *fiber.Ctx) error {
@@ -37,10 +50,10 @@ func (h *AuthHandler) HandleAuthentication(ctx *fiber.Ctx) error {
 	}
 	user, err := h.userStore.GetUserByEmail(ctx.Context(), params.Email)
 	if err != nil {
-		return fmt.Errorf("invalid crediantials")
+		return invalidCredentials(ctx)
 	}
 	if !types.IsValidPassword(user.EncryptedPassWord, params.Password) {
-		return fmt.Errorf("invalid crediantials")
+		return invalidCredentials(ctx)
 	}
 
 	authRes := AuthResponse{
